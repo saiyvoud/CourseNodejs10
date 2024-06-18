@@ -13,6 +13,17 @@ import CryptoJS from "crypto-js";
 import { Decrypts, GenerateToken } from "../service/service.js";
 // es class
 export default class UserController {
+  static async selectAll(req, res) {
+    try {
+      const mysql = "select * from user";
+      connected.query(mysql, (err, result) => {
+        if (err) return SendError404(res, EMessage.NotFound);
+        return SendSuccess(res, SMessage.GetAll,result);
+      });
+    } catch (error) {
+      return SendError500(res, EMessage.Server, error);
+    }
+  }
   static async login(req, res) {
     try {
       const { email, password } = req.body;

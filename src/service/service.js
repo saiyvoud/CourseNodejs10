@@ -1,6 +1,24 @@
 import CryptoJS from "crypto-js";
 import { SCREATKEY } from "../config/config.js";
 import jwt from "jsonwebtoken";
+import connected from "../config/db_mysql.js";
+export const VerifyToken = (token) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      jwt.verify(token, SCREATKEY, (err, decode) => {
+        if (err) reject(err);
+
+        const mysql = "select * from user where uuid=?";
+        connected.query(mysql, decode["id"], (error, result) => {
+          if (error) reject(error);
+          resolve(result[0]);
+        });
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 export const Decrypts = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -44,7 +62,7 @@ export const GenerateToken = async (data) => {
       });
       let date = new Date();
       let expiresIn = date.setHours(2 + date.getHours());
-      resolve({ token, refreshToken,expiresIn });
+      resolve({ token, refreshToken, expiresIn });
     } catch (error) {
       console.log(error);
       reject(error);

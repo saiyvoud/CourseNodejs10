@@ -8,6 +8,8 @@ export const EMessage = {
   Server: "Error Server Internal",
   NotFound: "Not Found",
   Already: "Already",
+  Unauthorized: "Unauthorized",
+  InvaildUnauthorized: "Invaild Unauthorized",
   PleaseInput: "Please Input: ",
   InsertError: "Error Insert",
   UpdateError: "Error Update",
