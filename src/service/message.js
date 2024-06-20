@@ -6,8 +6,10 @@ export const Role = {
 export const EMessage = {
   // EMessage = Error Message
   Server: "Error Server Internal",
+  BadRequest: "Bad Request",
   NotFound: "Not Found",
   Already: "Already",
+  NotMatch: "Not macth password",
   Unauthorized: "Unauthorized",
   InvaildUnauthorized: "Invaild Unauthorized",
   PleaseInput: "Please Input: ",
@@ -17,8 +19,8 @@ export const EMessage = {
 };
 export const SMessage = {
   // SMessage = Success Message
-  GetOne: "Get One Success",
-  GetAll: "Get All Success",
+  SelectOne: "Select One Success",
+  SelectAll: "Select All Success",
   Login: "Login Success",
   Register: "Register Success",
   Insert: "Insert Success",

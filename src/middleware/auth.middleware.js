@@ -9,7 +9,9 @@ export const auth = async (req, res, next) => {
       return SendError401(res, EMessage.Unauthorized);
     }
     const token = authorized.replace("Bearer ", "");
-    
+    if(!token){
+      return SendError401(res, EMessage.Unauthorized);
+    }
     const verifyData = await VerifyToken(token);
     if (!verifyData) {
       return SendError401(res, EMessage.InvaildUnauthorized);

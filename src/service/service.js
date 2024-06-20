@@ -11,7 +11,7 @@ export const VerifyToken = (token) => {
         const mysql = "select * from user where uuid=?";
         connected.query(mysql, decode["id"], (error, result) => {
           if (error) reject(error);
-          resolve(result[0]);
+          resolve(result[0]['uuid']);
         });
       });
     } catch (error) {
