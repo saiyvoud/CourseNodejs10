@@ -16,6 +16,7 @@ import {
   GenerateToken,
   VerifyToken,
 } from "../service/service.js";
+import { UploadNewImageToCloud } from "../config/cloudinary.js";
 // es class
 export default class UserController {
   static async selectAll(req, res) {
@@ -203,7 +204,26 @@ export default class UserController {
       return SendError500(res, EMessage.Server, error);
     }
   }
-
+  static async updateProfile(req, res) {
+    try {
+      const uuid = req.params.uuid;
+      const image = req.files;
+      if (!image) return SendError400(res, EMessage.BadRequest + "image");
+      const check = "select * from user where uuid=?";
+      connected.query(check, uuid, async (err, result) => {
+        if (err) return SendError404(res, EMessage.NotFound + " user");
+        const image_url = await UploadNewImageToCloud(image.profile.data);
+        if (!image_url) return SendError400(res, EMessage.UploadImageError);
+        const update = "update user set profile=? where uuid=?";
+        connected.query(update, [image_url, uuid], (error) => {
+          if (error) return SendError400(res, EMessage.UpdateError, error);
+          return SendSuccess(res, SMessage.Update);
+        });
+      });
+    } catch (error) {
+      return SendError500(res, EMessage.Server, error);
+    }
+  }
   static async updateUser(req, res) {
     try {
       const uuid = req.params.uuid;
@@ -236,17 +256,16 @@ export default class UserController {
       //console.log(uuid);
       const deleteUser = "delete from user where uuid=?";
       const checkUuid = "select * from user where uuid=?";
-      connected.query(checkUuid,uuid,(error,result)=>{
-          if(error) return SendError400(res.EMessage.NotFound + " user");
-          if(!result[0]) return SendError404(res,EMessage.NotFound + " user");
+      connected.query(checkUuid, uuid, (error, result) => {
+        if (error) return SendError400(res.EMessage.NotFound + " user");
+        if (!result[0]) return SendError404(res, EMessage.NotFound + " user");
 
-          connected.query(deleteUser, uuid, (err) => {
-            if (err) return SendError404(res, EMessage.DeleteError, err);
-             
-            return SendSuccess(res, SMessage.Delete);
-          });
-      })
-     
+        connected.query(deleteUser, uuid, (err) => {
+          if (err) return SendError404(res, EMessage.DeleteError, err);
+
+          return SendSuccess(res, SMessage.Delete);
+        });
+      });
     } catch (error) {
       return SendError500(res, EMessage.Server, error);
     }

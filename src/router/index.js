@@ -11,6 +11,7 @@ router.put("/user/update/:uuid",auth,UserController.updateUser);
 router.put("/user/forgot",UserController.forgotPassword);
 router.put("/user/updatePassword/:uuid",auth,UserController.updatePassword);
 router.put("/user/refreshToken",auth,UserController.refreshToken);
+router.put("/user/updateProfile/:uuid",auth,UserController.updateProfile);
 router.delete("/user/delete/:uuid",auth,UserController.deleteUser);
 
 export default router;

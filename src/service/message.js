@@ -7,6 +7,8 @@ export const EMessage = {
   // EMessage = Error Message
   Server: "Error Server Internal",
   BadRequest: "Bad Request",
+  
+  UploadImageError: "Upload Image Error",
   NotFound: "Not Found",
   Already: "Already",
   NotMatch: "Not macth password",
