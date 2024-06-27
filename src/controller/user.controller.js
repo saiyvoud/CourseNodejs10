@@ -17,6 +17,8 @@ import {
   VerifyToken,
 } from "../service/service.js";
 import { UploadNewImageToCloud } from "../config/cloudinary.js";
+import UploadImageToCloud from "../config/cloudinarys.js";
+import UploadImageToServer from "../service/uploadImageToServer.js";
 // es class
 export default class UserController {
   static async selectAll(req, res) {
@@ -212,7 +214,8 @@ export default class UserController {
       const check = "select * from user where uuid=?";
       connected.query(check, uuid, async (err, result) => {
         if (err) return SendError404(res, EMessage.NotFound + " user");
-        const image_url = await UploadNewImageToCloud(image.profile.data);
+       // const image_url = await UploadImageToCloud(image.profile.data);
+       const image_url = await UploadImageToServer(image.profile.data);
         if (!image_url) return SendError400(res, EMessage.UploadImageError);
         const update = "update user set profile=? where uuid=?";
         connected.query(update, [image_url, uuid], (error) => {
