@@ -16,7 +16,7 @@ router.put("/user/updateProfile/:uuid",auth,UserController.updateProfile);
 router.delete("/user/delete/:uuid",auth,UserController.deleteUser);
 // -------- category --------
 router.get("/category/selectAll",auth,CategoryController.selectAll);
-router.get("/cateogry/selectOne/:cUuid",auth,CategoryController.selectOne);
+router.get("/category/selectOne/:cUuid",auth,CategoryController.selectOne);
 router.post("/category/insert",auth,CategoryController.insert);
 router.put("/category/update/:cUuid",auth,CategoryController.updateCategory);
 router.delete("/category/delete/:cUuid",auth,CategoryController.deleteCategory);

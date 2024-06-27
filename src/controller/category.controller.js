@@ -23,9 +23,10 @@ export default class CategoryController {
   static async selectOne(req, res) {
     try {
       const cUuid = req.params.cUuid;
-      const check = "selcet * from category where cUuid =?";
+      const check = "select * from category where cUuid=?";
       connected.query(check, cUuid, (err, result) => {
-        if (err) return SendError404(res, EMessage.NotFound + " category");
+        if (err) return SendError404(res, EMessage.NotFound + " category",err);
+        if(!result[0]) return SendError404(res, EMessage.NotFound + " category");
         return SendSuccess(res, SMessage.SelectOne, result[0]);
       });
     } catch (error) {
@@ -66,6 +67,7 @@ export default class CategoryController {
         .replace(/\..+/, "");
       connected.query(check, cUuid, (err, result) => {
         if (err) return SendError404(res, EMessage.NotFound + " category");
+        if(!result[0]) return SendError404(res, EMessage.NotFound + " category");
         const update =
           "update category set title=? , updatedAt=? where cUuid=?";
         connected.query(
@@ -87,6 +89,7 @@ export default class CategoryController {
       const check = "select * from category where cUuid = ?";
       connected.query(check, cUuid, (err, result) => {
         if (err) return SendError404(res, EMessage.NotFound + " Category");
+        if(!result[0]) return SendError404(res, EMessage.NotFound + " category");
         const deleteCategory = "Delete from category where cUuid=?";
         connected.query(deleteCategory, cUuid, (error) => {
           if (error) return SendError400(res, EMessage.DeleteError, error);
