@@ -1,5 +1,6 @@
 import express from "express";
 import CategoryController from "../controller/category.controller.js";
+import ProductController from "../controller/product.controller.js";
 import UserController from "../controller/user.controller.js";
 import { auth } from "../middleware/auth.middleware.js";
 const router = express.Router();
@@ -20,5 +21,11 @@ router.get("/category/selectOne/:cUuid",auth,CategoryController.selectOne);
 router.post("/category/insert",auth,CategoryController.insert);
 router.put("/category/update/:cUuid",auth,CategoryController.updateCategory);
 router.delete("/category/delete/:cUuid",auth,CategoryController.deleteCategory);
+// --------- product ---------
+router.get("/product/selectAll",auth,ProductController.selectAll);
+router.get("/product/selectOne/:pUuid",auth,ProductController.selectOne);
+router.post("/product/insert",auth,ProductController.insert);
+router.put("/product/update/:pUuid",auth,ProductController.updateProduct);
+router.delete("/product/delete/:pUuid",auth,ProductController.deleteProduct);
 
 export default router;

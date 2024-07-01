@@ -13,11 +13,13 @@ import { v4 as uuidv4 } from "uuid";
 export default class ProductController {
   static async selectAll(req, res) {
     try {
-      const mysql = "select * from product";
+      const mysql = `select product.pID,product.pUuid,product.name,product.detail,product.amount,product.price,product.image,category.title,product.createdAt,product.updatedAt
+        From product 
+        INNER JOIN category ON product.category_id = category.cUuid`;
       connected.query(mysql, (err, result) => {
         if (err) return SendError404(res, EMessage.NotFound + " product");
+        return SendSuccess(res, SMessage.SelectAll, result);
       });
-      return SendSuccess(res, SMessage.SelectAll, result);
     } catch (error) {
       return SendError500(res, EMessage.Server, error);
     }
@@ -25,7 +27,9 @@ export default class ProductController {
   static async selectOne(req, res) {
     try {
       const pUuid = req.params.pUuid;
-      const checkProduct = "Select * from product where pUuid=?";
+      const checkProduct = `select product.pID,product.pUuid,product.name,product.detail,product.amount,product.price,product.image,category.title,product.createdAt,product.updatedAt
+        From product 
+        INNER JOIN category ON product.category_id = category.cUuid Where pUuid=?`;
       connected.query(checkProduct, pUuid, (err, result) => {
         if (err) return SendError404(res, EMessage.NotFound + " product", err);
         if (!result[0])
@@ -65,7 +69,7 @@ export default class ProductController {
           return SendError404(res, EMessage.NotFound + " category");
         const image_url = await UploadImageToCloud(image.image.data);
         if (!image_url) return SendError400(res, EMessage.UploadImageError);
-        const insert = `insert into product (pUuid,name,detail,amount,price,image,category_id,createdAt,updatedAt) 
+        const insert = `insert into product (pUuid,name,detail,amount,price,image,createdAt,category_id,updatedAt) 
         values (?,?,?,?,?,?,?,?,?)`;
         connected.query(
           insert,
@@ -76,12 +80,13 @@ export default class ProductController {
             amount,
             price,
             image_url,
-            category_id,
             datetime,
+            category_id,
             datetime,
           ],
           (err) => {
-            if (err) return SendError400(res, EMessage.InsertError, error);
+            if (err) return SendError404(res, EMessage.InsertError, err);
+            console.log(err);
             return SendCreate(res, SMessage.Insert);
           }
         );
@@ -94,11 +99,18 @@ export default class ProductController {
     try {
       const pUuid = req.params.pUuid;
       const { name, detail, amount, price, category_id } = req.body;
-      const validate = await ValidateData({name,detail,amount,price,category_id,});
+      const validate = await ValidateData({
+        name,
+        detail,
+        amount,
+        price,
+        category_id,
+      });
       if (validate.length > 0) {
         return SendError400(res, EMessage.PleaseInput + validate.join(","));
       }
       const image = req.files;
+      if(!image) return SendError400(res,EMessage.BadRequest + " image")
       const checkProductId = "select * from product where pUuid=?";
       const datetime = new Date()
         .toISOString()
@@ -110,21 +122,26 @@ export default class ProductController {
         if (!productData[0])
           return SendError404(res, EMessage.NotFound + " product");
         const checkCategory = "select * from category where cUuid=?";
-        connected.query(checkCategory,category_id,
-            async (errCategory, categoryData) => {
+        connected.query(
+          checkCategory,
+          category_id,
+          async (errCategory, categoryData) => {
             if (errCategory)
-              return SendError404(res,EMessage.NotFound + " category",errCategory);
+              return SendError404(
+                res,
+                EMessage.NotFound + " category",
+                errCategory
+              );
             if (!categoryData)
               return SendError404(res, EMessage.NotFound + " category");
             const image_url = await UploadImageToCloud(image.image.data);
             if (!image_url)
               return SendError400(res, EMessage.BadRequest + " image");
-            const update =
-              `update product set name=? detail=?,amount=?,
+            const update = `update product set name=?,detail=?,amount=?,
               price=?,image=?,category_id=?,updatedAt=? where pUuid=?`;
             connected.query(
               update,
-              [name, detail, amount, price, category_id, datetime],
+              [name, detail, amount, price, image_url,category_id, datetime,pUuid],
               (errUpdate) => {
                 if (errUpdate)
                   return SendError400(res, EMessage.UpdateError, errUpdate);
