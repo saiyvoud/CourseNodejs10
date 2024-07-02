@@ -1,4 +1,5 @@
 import express from "express";
+import BannerController from "../controller/banner.controller.js";
 import CategoryController from "../controller/category.controller.js";
 import ProductController from "../controller/product.controller.js";
 import UserController from "../controller/user.controller.js";
@@ -27,5 +28,11 @@ router.get("/product/selectOne/:pUuid",auth,ProductController.selectOne);
 router.post("/product/insert",auth,ProductController.insert);
 router.put("/product/update/:pUuid",auth,ProductController.updateProduct);
 router.delete("/product/delete/:pUuid",auth,ProductController.deleteProduct);
+// ---------- banner ---------
+router.get("/banner/selectAll",auth,BannerController.selectAll);
+router.get("/banner/selectOne/:bUuid",auth,BannerController.selectOne);
+router.post("/banner/insert",auth,BannerController.insert);
+router.put("/banner/update/:bUuid",auth,BannerController.updateBanner);
+router.delete("/banner/delete/:bUuid",auth,BannerController.deleteBanner);
 
 export default router;
