@@ -1,6 +1,7 @@
 import express from "express";
 import BannerController from "../controller/banner.controller.js";
 import CategoryController from "../controller/category.controller.js";
+import OrderController from "../controller/order.controller.js";
 import ProductController from "../controller/product.controller.js";
 import UserController from "../controller/user.controller.js";
 import { auth } from "../middleware/auth.middleware.js";
@@ -34,5 +35,11 @@ router.get("/banner/selectOne/:bUuid",auth,BannerController.selectOne);
 router.post("/banner/insert",auth,BannerController.insert);
 router.put("/banner/update/:bUuid",auth,BannerController.updateBanner);
 router.delete("/banner/delete/:bUuid",auth,BannerController.deleteBanner);
+// ----------- order ---------
+router.get("/orders/selectAll",auth,OrderController.selectAll);
+router.get("/orders/selectOne/:oUuid",auth,OrderController.selectOne);
+router.post("/orders/insert",auth,OrderController.insert);
+router.put("/orders/update/:oUuid",auth,OrderController.updateOrderStatus);
+router.delete("/orders/delete/:oUuid",auth,OrderController.deleteOrder);
 
 export default router;

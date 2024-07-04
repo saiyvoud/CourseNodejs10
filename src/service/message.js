@@ -3,6 +3,11 @@ export const Role = {
   admin: "admin",
   owner: "owner",
 };
+export const StatusOrder = {
+  padding: "padding",
+  success: "success",
+  cancel: "cancel",
+}
 export const EMessage = {
   // EMessage = Error Message
   Server: "Error Server Internal",

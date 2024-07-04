@@ -56,6 +56,7 @@ export default class ProductController {
       }
       const image = req.files;
       if (!image) return SendError400(res, EMessage.BadRequest + "image");
+      console.log(image);
       const pUuid = uuidv4();
       const checkCategory = "select * from category where cUuid=?";
       const datetime = new Date()
