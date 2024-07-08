@@ -26,8 +26,10 @@ export const EMessage = {
 };
 export const SMessage = {
   // SMessage = Success Message
+  Search: "Search Success",  
   SelectOne: "Select One Success",
   SelectAll: "Select All Success",
+  SelectBy: "Select By Success",
   Login: "Login Success",
   Register: "Register Success",
   Insert: "Insert Success",

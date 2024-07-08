@@ -11,6 +11,20 @@ import {
 import { ValidateData } from "../service/validate.js";
 import { v4 as uuidv4 } from "uuid";
 export default class ProductController {
+  static async searchProduct(req, res) {
+    try {
+      const search = req.query.search;
+      if (!search) return SendError400(res, EMessage.BadRequest + " search");
+      const check = `SELECT * FROM product WHERE name LIKE '%${search}%'`;
+      connected.query(check, (err, result) => {
+        if (err) return SendError404(res, EMessage.NotFound + " search");
+        if(!result[0]) return SendError404(res, EMessage.NotFound + " search");
+        return SendSuccess(res, SMessage.Search, result);
+      });
+    } catch (error) {
+      return SendError500(res, EMessage.Server, error);
+    }
+  }
   static async selectAll(req, res) {
     try {
       const mysql = `select product.pID,product.pUuid,product.name,product.detail,product.amount,product.price,product.image,category.title,product.createdAt,product.updatedAt
@@ -111,7 +125,7 @@ export default class ProductController {
         return SendError400(res, EMessage.PleaseInput + validate.join(","));
       }
       const image = req.files;
-      if(!image) return SendError400(res,EMessage.BadRequest + " image")
+      if (!image) return SendError400(res, EMessage.BadRequest + " image");
       const checkProductId = "select * from product where pUuid=?";
       const datetime = new Date()
         .toISOString()
@@ -142,7 +156,16 @@ export default class ProductController {
               price=?,image=?,category_id=?,updatedAt=? where pUuid=?`;
             connected.query(
               update,
-              [name, detail, amount, price, image_url,category_id, datetime,pUuid],
+              [
+                name,
+                detail,
+                amount,
+                price,
+                image_url,
+                category_id,
+                datetime,
+                pUuid,
+              ],
               (errUpdate) => {
                 if (errUpdate)
                   return SendError400(res, EMessage.UpdateError, errUpdate);
